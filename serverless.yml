@@ -1,0 +1,56 @@
+# Full reference: https://www.serverless.com/framework/docs/providers/azure/guide/serverless.yml
+service: sls-azure-functions
+
+frameworkVersion: '3.16.0'
+
+custom:
+  webpack:
+    includeModules: true
+  vars: ${file(./vars.json)}
+
+provider:
+  name: azure
+  region: eastus
+  runtime: nodejs14
+  apim: true
+  environment:
+    EVENT_HUBS_CONNECTION: ${self:custom.vars.EVENT_HUBS_CONNECTION}
+    EVENT_HUBS_NAME: ${self:custom.vars.EVENT_HUBS_NAME}
+    SERVICE_BUS_CONNECTION: ${self:custom.vars.SERVICE_BUS_CONNECTION}
+    SERVICE_BUS_QUEUE: ${self:custom.vars.SERVICE_BUS_QUEUE}
+
+plugins:
+  - serverless-webpack
+  - serverless-azure-functions
+
+package:
+  patterns:
+    - '!.git/**'
+    - '!local.settings.json'
+    - '!.vscode/**'
+    - '!.serverless/**'
+    - '!.webpack/**'
+
+functions:
+  hello:
+    handler: src/handlers/http.handler
+    events:
+      - http: true
+        methods:
+          - GET
+        route: hello
+        authLevel : function
+  serviceBus:
+    handler: src/handlers/serviceBus.handler
+    events:
+      - serviceBus: true
+        queueName: ${self:provider.environment.SERVICE_BUS_QUEUE}
+        accessRights: listen
+        connection: SERVICE_BUS_CONNECTION
+  eventHubs:
+    handler: src/handlers/eventHubs.handler
+    events:
+      - eventHub: true
+        eventHubName: ${self:provider.environment.EVENT_HUBS_NAME}
+        consumerGroup: $Default
+        connection: EVENT_HUBS_CONNECTION

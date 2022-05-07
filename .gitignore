@@ -1,0 +1,10 @@
+local.settings.json
+.webpack
+.serverless
+node_modules
+.terraform
+**.hcl
+**.tfvars
+**.tfstate
+**.tfstate.**
+function.json

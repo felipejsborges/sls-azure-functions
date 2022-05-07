@@ -1,0 +1,6 @@
+{
+	"EVENT_HUBS_CONNECTION": "",
+	"EVENT_HUBS_NAME": "festival-ms-eventhub",
+	"SERVICE_BUS_CONNECTION": "",
+	"SERVICE_BUS_QUEUE": "festival-ms-sb-queue"
+}

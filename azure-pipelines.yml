@@ -1,0 +1,25 @@
+# It will work only if this code is on Azure Repos, and a Service Connection for ARM is created.
+jobs:
+  - job: Deploy
+    pool:
+      vmImage: ubuntu-latest
+  
+    steps:
+    - task: NodeTool@0
+      displayName: Setting Node version
+      inputs:
+        versionSpec: 14.17.1
+  
+    - bash: npm install -g serverless
+      displayName: 'Install Serverless CLI'
+  
+    - bash: npm install
+      displayName: Installing dependencies
+  
+    - bash: serverless deploy --region eastus --resourceGroup "festival-ms-rg" --subscriptionId "$(AZURE_SUBSCRIPTION_ID)" --verbose
+      env:
+        AZURE_SUBSCRIPTION_ID: $(AZURE_SUBSCRIPTION_ID)
+        AZURE_TENANT_ID: $(AZURE_TENANT_ID)
+        AZURE_CLIENT_ID: $(AZURE_CLIENT_ID)
+        AZURE_CLIENT_SECRET: $(AZURE_CLIENT_SECRET)
+  
